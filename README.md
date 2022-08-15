@@ -29,8 +29,8 @@ calx-init -n project-name
 This will create a new directory `./project-name` which will be the default project structure:
 ```
 project-name/
-├── components      # directory to create custom components
-├── tests           # directory to write unit test
+├── components/     # directory to create custom components
+├── tests/          # directory to write unit test
 ├── .env            # file to store credentials / secrets
 └── pipeline.yaml   # file to define the ML pipeline
 ```
@@ -56,4 +56,4 @@ This project is currently not open for contribution and has no plan for it to be
 
 ## Disclaimer
 - Please only use this project for local development only as it is not tested for security vulnerability, any incident that may happen is beyond my responsibility.
-- This project is built using Python 3.7.13 on WSL2 Ubuntu, other version may or may not work as expected.
+- This project is written and tested using `Python 3.7.13` on `WSL2 Ubuntu`, other version may or may not work as expected.
