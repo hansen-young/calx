@@ -3,7 +3,7 @@ import yaml
 from collections import Counter
 
 from calx.dtypes import *
-from calx.scripts.utils import _import_module
+from calx.utils import import_module
 from calx.scripts.config import _read_template, __p_template
 
 
@@ -66,6 +66,7 @@ def _check_dag(conf: Config):
 
 def _check_steps_confkeys(conf: Config):
     __required_keys = {"type", "options"}
+    __optional_keys = {"envfile"}
 
     for name, opt in conf["steps"].items():
         # Check if the required attributes exists
@@ -90,7 +91,7 @@ def _check_steps_confkeys(conf: Config):
 
 
 def _check_steps_type_module(opt: dict):
-    klass = _import_module(opt["path"])
+    klass = import_module(opt["path"])
     klass(**opt["arguments"])
 
 

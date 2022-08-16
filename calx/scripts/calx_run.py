@@ -4,8 +4,8 @@ import multiprocessing as mp
 
 from omegaconf import OmegaConf
 from calx.dtypes import *
+from calx.scripts.config import read_environ
 from calx.scripts.config.check import check_pipeline_configs
-from calx.scripts.utils import _import_module
 from calx.scripts.runner import ModuleRunner
 
 
@@ -43,11 +43,12 @@ def parse_arguments():
 def run_step(step: str, workdir: str, conf: Config) -> BaseRunner:
     step_conf = conf["steps"][step]
     stype = step_conf["type"].lower()
+    environ = read_environ(step_conf.get("envfile"), workdir)
 
     if stype == "module":
         runner = ModuleRunner(
             **step_conf["options"],
-            envlist={"MYTESTKEY": "VALUE"},
+            envlist=environ,
             workdir=workdir,
         )
 

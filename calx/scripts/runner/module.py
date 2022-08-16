@@ -3,7 +3,7 @@ import sys
 from multiprocessing import Process
 
 from .base import BaseRunner
-from calx.scripts.utils import _import_module
+from calx.utils import import_module
 
 
 class ModuleRunner(BaseRunner):
@@ -52,7 +52,7 @@ class ModuleRunner(BaseRunner):
         self._set_workdir()
         self._set_environment()
 
-        klass = _import_module(self._path)
+        klass = import_module(self._path)
         klass(**self._args)()
 
     def __call__(self, *args, **kwargs):
