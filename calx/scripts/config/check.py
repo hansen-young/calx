@@ -91,7 +91,7 @@ def _check_steps_confkeys(conf: Config):
 
 def _check_steps_type_module(opt: dict):
     klass = _import_module(opt["path"])
-    klass(**opt["options"])
+    klass(**opt["arguments"])
 
 
 def _check_steps(conf: Config):

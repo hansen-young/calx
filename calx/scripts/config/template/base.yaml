@@ -21,13 +21,13 @@ steps:
     description: ""
     options:
       path: calx.components.RetrieveData
-      options: {}
+      arguments: {}
   preprocess_data:
     type: module
     description: ""
     options:
       path: calx.components.PreprocessData
-      options: {}
+      arguments: {}
 
 # Future Plan:
 # - steps.<name>.type = {module, cli, docker}

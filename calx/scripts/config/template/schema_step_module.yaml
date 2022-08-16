@@ -1,5 +1,5 @@
 required:
   path: string
-  options: {}
+  arguments: {}
 
 optional: {}

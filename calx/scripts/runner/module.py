@@ -10,14 +10,14 @@ class ModuleRunner(BaseRunner):
     def __init__(
         self,
         path: str,
-        options: dict,
+        arguments: dict,
         name: str = None,
         envlist: dict = {},
         workdir: str = None,
     ):
         super().__init__(name, envlist, workdir)
         self._path = path
-        self._options = options
+        self._args = arguments
         self._process = None
 
     @property
@@ -53,7 +53,7 @@ class ModuleRunner(BaseRunner):
         self._set_environment()
 
         klass = _import_module(self._path)
-        klass(**self._options)()
+        klass(**self._args)()
 
     def __call__(self, *args, **kwargs):
         self._process = Process(target=self._main)
