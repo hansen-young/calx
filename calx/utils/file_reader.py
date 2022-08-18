@@ -20,3 +20,23 @@ def read_file(path: str) -> str:
         return _read_local_file(path)
 
     return _read_file_from_link(path)
+
+
+# ====== Environ ===== #
+from dotenv import dotenv_values
+
+
+def read_environ(file: str, basedir: str = None) -> dict:
+    if not basedir:
+        basedir = os.getcwd()
+
+    if not file:
+        return {}
+
+    basedir = os.path.abspath(basedir)
+    fullpath = os.path.join(basedir, file)
+
+    if not os.path.isfile(fullpath):
+        raise FileNotFoundError(f"environment file {fullpath} is missing.")
+
+    return dotenv_values(fullpath)

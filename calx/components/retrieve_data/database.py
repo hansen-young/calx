@@ -1,5 +1,3 @@
-from urllib.parse import urlparse, ParseResult
-
 import pandas as pd
 from sqlalchemy.engine import create_engine
 from calx.utils import read_file

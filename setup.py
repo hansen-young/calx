@@ -28,9 +28,11 @@ setuptools.setup(
         ],
     },
     install_requires=[
+        "docker==5.0.3",
         "mysqlclient==2.1.1",
         "omegaconf==2.1.2",
         "pandas==1.3.5",
+        "psycopg2==2.9.3",
         "pybigquery==0.10.2",
         "python-dotenv==0.20.0",
         "PyYAML==5.4.1",

@@ -54,23 +54,3 @@ def base_template_from_args(args: Namespace) -> dict:
         args.name,
         args.backend,
     )
-
-
-# ====== Environ ===== #
-from dotenv import dotenv_values
-
-
-def read_environ(file: str, workdir: str = None) -> dict:
-    if not workdir:
-        workdir = os.getcwd()
-
-    if not file:
-        return {}
-
-    workdir = os.path.abspath(workdir)
-    fullpath = os.path.join(workdir, file)
-
-    if not os.path.isfile(fullpath):
-        raise FileNotFoundError(f"environment file {fullpath} is missing.")
-
-    return dotenv_values(fullpath)

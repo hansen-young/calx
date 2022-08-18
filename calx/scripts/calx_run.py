@@ -1,12 +1,11 @@
 import time
 import argparse
-import multiprocessing as mp
 
 from omegaconf import OmegaConf
 from calx.dtypes import *
-from calx.scripts.config import read_environ
+from calx.utils import read_environ
 from calx.scripts.config.check import check_pipeline_configs
-from calx.scripts.runner import ModuleRunner
+from calx.scripts.containers import build, spawn_container, BaseContainer
 
 
 def parse_arguments():
@@ -16,6 +15,13 @@ def parse_arguments():
         "--all",
         action="store_true",
         help="run all steps defined in pipeline",
+    )
+    parser.add_argument(
+        "-c",
+        "--container",
+        type=str,
+        default="local",
+        help="container to be used for running step",
     )
     parser.add_argument(
         "-f",
@@ -40,23 +46,16 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def run_step(step: str, workdir: str, conf: Config) -> BaseRunner:
+def run_step(step: str, args: Namespace, conf: Config) -> BaseContainer:
     step_conf = conf["steps"][step]
-    stype = step_conf["type"].lower()
-    environ = read_environ(step_conf.get("envfile"), workdir)
+    step_type = step_conf["type"].lower()
+    container_type = args.container if step_type != "docker" else "docker"
+    envlist = read_environ(step_conf.get("envfile"), args.workdir)
 
-    if stype == "module":
-        runner = ModuleRunner(
-            **step_conf["options"],
-            envlist=environ,
-            workdir=workdir,
-        )
-
-    runner()
-    return runner
+    return spawn_container(container_type, step, args.file, args.workdir, envlist)
 
 
-def run_pipeline(workdir: str, conf: Config):
+def run_pipeline(args: Namespace, conf: Config):
     running = {}
     queued = {}
     to_pop = []
@@ -73,7 +72,7 @@ def run_pipeline(workdir: str, conf: Config):
         to_pop.clear()
         for name, c in queued.items():
             if not c["dependencies"]:
-                running[name] = run_step(c["step"], workdir, conf)
+                running[name] = run_step(c["step"], args, conf)
                 to_pop.append(name)
 
         for qname in to_pop:
@@ -102,10 +101,11 @@ def run_pipeline(workdir: str, conf: Config):
 
 def run(args: Namespace, conf: Config):
     if args.all:
-        _ = run_pipeline(args.workdir, conf)
+        _ = run_pipeline(args, conf)
 
     elif args.step:
-        _ = run_step(args.step, args.workdir, conf)
+        container = run_step(args.step, args, conf)
+        container.wait()
 
 
 def main():
@@ -119,4 +119,5 @@ def main():
     # =============
 
     check_pipeline_configs(conf)
+    build(args, conf)
     run(args, conf)

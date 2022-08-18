@@ -11,21 +11,23 @@ class Debugger:
         print("[ Environment Variables ]")
         for k, v in os.environ.items():
             print(f"{k}={v}")
+        print()
 
     def _print_syspath(self):
         print("[ System Paths ]")
         for p in sys.path:
             print(f"- {p}")
+        print()
 
     def _print_process_detail(self):
         print("[ Process Detail ]")
         print(f"pid: {os.getpid()}")
+        print(f"cwd: {os.getcwd()}")
+        print()
 
     def __call__(self):
         self._print_env()
-        print()
         self._print_syspath()
-        print()
         self._print_process_detail()
 
 
