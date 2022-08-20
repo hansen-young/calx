@@ -12,6 +12,11 @@ def spawn_container(
     container_type: str, step_name: str, config_file: str, workdir: str, envlist: dict
 ) -> BaseContainer:
     container = __containers[container_type]()
-    container.run(step_name, config_file, workdir, envlist)
+    container.run(
+        step_name=step_name,
+        config_file=config_file,
+        workdir=workdir,
+        envlist=envlist,
+    )
 
     return container

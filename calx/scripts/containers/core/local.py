@@ -31,9 +31,8 @@ class LocalContainer(BaseContainer):
     def is_finished(self) -> bool:
         return self.__started and not self.is_running()
 
-    def wait(self):
-        while self.is_running():
-            time.sleep(1)
+    def wait(self, timeout: int = None):
+        self._process.wait(timeout=timeout)
 
     def run(self, step_name: str, config_file: str, workdir: str, envlist: str):
         if self.__started:

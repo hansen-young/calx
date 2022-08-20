@@ -28,6 +28,7 @@ setuptools.setup(
         ],
     },
     install_requires=[
+        "dirhash==0.2.1",
         "docker==5.0.3",
         "mysqlclient==2.1.1",
         "omegaconf==2.1.2",

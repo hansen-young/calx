@@ -13,7 +13,7 @@ class BaseContainer:
     def is_finished(self) -> bool:
         raise NotImplementedError()
 
-    def wait(self):
+    def wait(self, timeout: int = None):
         raise NotImplementedError()
 
     def run(self, step_name: str, config_file: str, workdir: str, envlist: str):
