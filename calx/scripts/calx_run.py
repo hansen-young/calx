@@ -2,9 +2,8 @@ import time
 import argparse
 import multiprocessing as mp
 
-from omegaconf import OmegaConf
 from calx.dtypes import *
-from calx.scripts.config import read_environ
+from calx.scripts.config import read_environ, load_config
 from calx.scripts.config.check import check_pipeline_configs
 from calx.scripts.runner import ModuleRunner
 
@@ -110,7 +109,7 @@ def run(args: Namespace, conf: Config):
 
 def main():
     args = parse_arguments()
-    conf = OmegaConf.load(args.file)
+    conf = load_config(args.file)
 
     # == !DEBUG! ==
     print("[calx-run]")
