@@ -1,0 +1,28 @@
+# refer: docker.models.containers.ContainerCollection
+
+required:
+  image: string
+
+optional:
+  command: string  # if none (default), use the image CMD
+  stdout: true
+  stderr: false
+  remove: false
+
+  # commonly used
+  cpu_count: 1
+  mem_limit: string  # e.g 100000b, 1000k, 128m, 1g
+  memswap_limit: string
+  network: string
+  network_mode: string
+  ports:
+    docker-port: host-port
+  volumes:
+    /host/path:
+      bind: /container/path
+
+  # set by DockerRunner
+  auto_remove: true
+  detach: true
+  environment: {}  # override from envfile in pipeline.yaml
+

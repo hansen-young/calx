@@ -3,7 +3,7 @@ from omegaconf import OmegaConf
 
 from calx.dtypes import *
 from calx.scripts.config import load_config
-from calx.scripts.runner import ModuleRunner, CLIRunner
+from calx.scripts.runner import ModuleRunner, CLIRunner, DockerRunner
 
 
 def parse_arguments():
@@ -30,14 +30,16 @@ def run(step_name: str, conf: Config):
     __runner = {
         "module": ModuleRunner,
         "cli": CLIRunner,
+        "docker": DockerRunner,
     }
 
     step_conf = conf["steps"][step_name]
     step_type = step_conf["type"]
     step_options = step_conf["options"]
+    step_envfile = step_conf.get("envfile")
 
-    runner = __runner[step_type](**step_options)
-    runner()
+    runner = __runner[step_type](name=step_name, envfile=step_envfile)
+    runner(**step_options)
 
 
 if __name__ == "__main__":

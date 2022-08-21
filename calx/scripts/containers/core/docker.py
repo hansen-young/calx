@@ -64,7 +64,7 @@ class DockerContainer(BaseContainer):
         else:
             self._process.wait(condition="not-running")
 
-    def run(self, step_name: str, envlist: str, **kwargs):
+    def run(self, step_name: str, envlist: dict, **kwargs):
         if self.__started:
             raise Exception("container has been used")
 

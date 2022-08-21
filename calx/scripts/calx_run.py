@@ -49,7 +49,7 @@ def parse_arguments():
 def run_step(step: str, args: Namespace, conf: Config) -> BaseContainer:
     step_conf = conf["steps"][step]
     step_type = step_conf["type"].lower()
-    container_type = args.container if step_type != "docker" else "docker"
+    container_type = args.container if step_type != "docker" else "local"
     envlist = read_environ(step_conf.get("envfile"), args.workdir)
 
     return spawn_container(container_type, step, args.file, args.workdir, envlist)
