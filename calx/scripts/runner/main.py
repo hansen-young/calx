@@ -3,7 +3,7 @@ from omegaconf import OmegaConf
 
 from calx.dtypes import *
 from calx.scripts.config import load_config
-from calx.scripts.runner import ModuleRunner
+from calx.scripts.runner import ModuleRunner, CLIRunner
 
 
 def parse_arguments():
@@ -27,7 +27,10 @@ def parse_arguments():
 
 
 def run(step_name: str, conf: Config):
-    __runner = {"module": ModuleRunner}
+    __runner = {
+        "module": ModuleRunner,
+        "cli": CLIRunner,
+    }
 
     step_conf = conf["steps"][step_name]
     step_type = step_conf["type"]
