@@ -30,7 +30,9 @@ setuptools.setup(
     install_requires=[
         "dirhash==0.2.1",
         "docker==5.0.3",
+        "matplotlib==3.5.3",
         "mysqlclient==2.1.1",
+        "networkx==2.6.2",
         "omegaconf==2.1.2",
         "pandas==1.3.5",
         "psycopg2==2.9.3",

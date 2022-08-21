@@ -1,36 +1,18 @@
 import os
 import yaml
+import networkx as nx
 from collections import Counter
 
 from calx.dtypes import *
-from calx.utils import import_module
+from calx.utils import import_module, construct_graph
 from calx.scripts.config import _read_template, __p_template
 
 
-def _check_cycle_util(graph: dict, node: str, visited: dict):
-    if visited[node] == 1:
-        raise Exception("dag contains cycle")
-
-    if visited[node] == 2:
-        return
-
-    visited[node] = 1
-
-    for nx_node in graph[node]:
-        _check_cycle_util(graph, nx_node, visited)
-
-    visited[node] = 2
-
-
 def _check_dag_has_cycle(conf: Config):
-    graph = {node["name"]: node["dependencies"] for node in conf["dag"]}
-    visited = {node["name"]: 0 for node in conf["dag"]}
+    graph = construct_graph(conf["dag"])
 
-    for node in graph:
-        if visited[node] == 2:
-            continue
-
-        _check_cycle_util(graph, node, visited)
+    if not nx.is_directed_acyclic_graph(graph):
+        raise Exception("dag contains cycle")
 
 
 def _check_dag_correct_step(conf: Config):
