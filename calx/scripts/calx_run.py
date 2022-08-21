@@ -1,9 +1,9 @@
 import time
 import argparse
 
-from omegaconf import OmegaConf
 from calx.dtypes import *
 from calx.utils import read_environ
+from calx.scripts.config import load_config
 from calx.scripts.config.check import check_pipeline_configs
 from calx.scripts.containers import build, spawn_container, BaseContainer
 
@@ -110,7 +110,7 @@ def run(args: Namespace, conf: Config):
 
 def main():
     args = parse_arguments()
-    conf = OmegaConf.load(args.file)
+    conf = load_config(args.file)
 
     # == !DEBUG! ==
     print("[calx-run]")

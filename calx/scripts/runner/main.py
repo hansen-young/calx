@@ -2,6 +2,7 @@ import argparse
 from omegaconf import OmegaConf
 
 from calx.dtypes import *
+from calx.scripts.config import load_config
 from calx.scripts.runner import ModuleRunner
 
 
@@ -38,6 +39,6 @@ def run(step_name: str, conf: Config):
 
 if __name__ == "__main__":
     args = parse_arguments()
-    conf = OmegaConf.load(args.file)
+    conf = load_config(args.file)
 
     run(args.step, conf)
