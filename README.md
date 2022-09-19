@@ -9,10 +9,10 @@
 **Main Features:**
 - Create ML Pipeline mostly by working on YAML files.
 - Builtins components to retrieve, preprocess, train, evaluate models.
-- Runs are tracked by backend server like MLFlow or wandb.
+- Runs are tracked by backend server like MLFlow or wandb. (revisit)
 - Create custom pipeline step.
-- Create step from docker image or CLI command (planned)
-- Covert calx pipeline.yaml to other package's format such as Kubeflow Pipeline (planned)
+- Create step from docker image or CLI command.
+- Covert calx pipeline.yaml to other package's format such as Kubeflow Pipeline. (planned)
 
 ## Installation
 The package is only available in this repository and can be installed using pip.

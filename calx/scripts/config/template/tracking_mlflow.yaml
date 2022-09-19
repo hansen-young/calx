@@ -1,2 +1,0 @@
-backend-store-uri: ./mlruns
-default-artifact-root: ./mlruns

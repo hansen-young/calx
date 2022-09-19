@@ -10,13 +10,6 @@ from calx.scripts.config import base_template_from_args, __p_template
 def parse_arguments() -> Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-b",
-        "--backend",
-        type=str.lower,
-        default="none",
-        help="the tracking server backend",
-    )
-    parser.add_argument(
         "-n",
         "--name",
         type=str,

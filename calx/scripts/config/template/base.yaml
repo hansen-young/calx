@@ -2,10 +2,6 @@ metadata:
   pipeline_name: null
   sdk_version: null
 
-tracking_server:
-  backend: null
-  options: {}
-
 dag:
   - name: retrieve-data
     step: retrieve_data
@@ -28,10 +24,3 @@ steps:
     options:
       path: calx.components.PreprocessData
       arguments: {}
-
-# Future Plan:
-# - steps.<name>.type = {module, cli, docker}
-#   type: cli
-#   options:
-#     command: "python /path/to/file.py"
-#     args: []
