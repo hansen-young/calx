@@ -110,7 +110,7 @@ def run(args: Namespace, conf: Config):
 
 def main():
     args = parse_arguments()
-    conf = load_config(args.file)
+    conf = load_config(args.file, args.workdir)
 
     # == !DEBUG! ==
     print("[calx-run]")
@@ -121,3 +121,12 @@ def main():
     check_pipeline_configs(conf)
     build(args, conf)
     run(args, conf)
+
+
+# Note + Reminder:
+# - containers spawned using LocalContainer will be based on args.workdir,
+#   all runners (expect docker) should be based on this directory.
+# - containers spawned using DockerContainer will be based on /usr/src/app
+#   which is from args.workdir. The args.file file will be moved to
+#   /tmp/calx-run/pipeline.yaml inside the docker container.
+# - all paths inside args.file should be relative to args.workdir

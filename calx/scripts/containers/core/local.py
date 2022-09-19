@@ -45,7 +45,7 @@ class LocalContainer(BaseContainer):
                 "-m",
                 "calx.scripts.runner.main",
                 "-f",
-                config_file,
+                os.path.abspath(config_file),
                 "-s",
                 step_name,
             ],

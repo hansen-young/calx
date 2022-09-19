@@ -37,7 +37,7 @@ def base_template_from_args(args: Namespace) -> dict:
     return base_template(args.name)
 
 
-def _load_default_steps(conf: Config):
+def _load_default_steps(conf: Config, workdir: str):
     if "steps" not in conf:
         conf["steps"] = DictConfig({})
 
@@ -46,7 +46,8 @@ def _load_default_steps(conf: Config):
 
     _supported_ext = (".yml", ".yaml")
 
-    basepath = conf["steps_dir"]
+    basepath = os.path.join(workdir, conf["steps_dir"])
+    basepath = os.path.abspath(basepath)
     files = os.listdir(basepath)
 
     for file in files:
@@ -68,8 +69,11 @@ def _load_default_steps(conf: Config):
                 conf["steps"][k] = v
 
 
-def load_config(path: str) -> Config:
+def load_config(path: str, workdir: str = None) -> Config:
+    if not workdir:
+        workdir = os.getcwd()
+
     conf = OmegaConf.load(path)
-    _load_default_steps(conf)
+    _load_default_steps(conf, workdir)
 
     return conf
