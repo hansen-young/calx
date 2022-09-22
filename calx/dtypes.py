@@ -1,5 +1,5 @@
 import argparse
-from typing import Union
+from typing import Union, Callable
 from omegaconf import ListConfig, DictConfig
 from networkx import DiGraph
 

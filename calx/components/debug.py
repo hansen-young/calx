@@ -32,7 +32,7 @@ class Debugger:
 
 
 class Sleep:
-    def __init__(self, time):
+    def __init__(self, time: int):
         self.time = time
         self.prefix = f"pid[{os.getpid()}]"
 

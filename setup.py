@@ -37,6 +37,7 @@ setuptools.setup(
         "pandas==1.3.5",
         "psycopg2==2.9.3",
         "pybigquery==0.10.2",
+        "pydantic==1.9.2",
         "python-dotenv==0.20.0",
         "PyYAML==5.4.1",
         "requests==2.28.1",

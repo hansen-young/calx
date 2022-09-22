@@ -2,9 +2,10 @@ import os
 import yaml
 import networkx as nx
 from collections import Counter
+from omegaconf import OmegaConf
 
 from calx.dtypes import *
-from calx.utils import import_module, construct_graph
+from calx.utils import import_module, construct_graph, validate_arguments
 from calx.scripts.config import _read_template, __p_template
 
 
@@ -74,7 +75,8 @@ def _check_steps_confkeys(conf: Config):
 
 def _check_steps_type_module(opt: dict):
     klass = import_module(opt["path"])
-    klass(**opt["arguments"])
+    args = OmegaConf.to_container(opt["arguments"])
+    validate_arguments(klass, args)
 
 
 def _check_steps(conf: Config):

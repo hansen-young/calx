@@ -1,5 +1,6 @@
 from calx.utils import import_module
 from calx.scripts.runner.base import BaseRunner
+from calx.utils import ValidatedFunction
 
 
 class ModuleRunner(BaseRunner):
@@ -8,4 +9,4 @@ class ModuleRunner(BaseRunner):
 
     def __call__(self, path: str, arguments: dict):
         klass = import_module(path)
-        klass(**arguments)()
+        ValidatedFunction(klass, None).call(**arguments)()
