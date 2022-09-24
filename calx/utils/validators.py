@@ -1,6 +1,7 @@
 # Note: this code is modified from pydatic.decorators source code
 #       https://github.com/pydantic/pydantic/blob/main/pydantic/decorator.py
 
+from functools import lru_cache
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -13,6 +14,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    _GenericAlias,
 )
 
 from pydantic import validator
@@ -45,6 +47,7 @@ V_POSITIONAL_ONLY_NAME = "v__positional_only"
 V_DUPLICATE_KWARGS = "v__duplicate_kwargs"
 
 
+@lru_cache(maxsize=32)
 def _is_pydantic_supported(type_: Type[Any]):
     class DisableArbitraryTypes:
         arbitrary_types_allowed = False
@@ -55,6 +58,31 @@ def _is_pydantic_supported(type_: Type[Any]):
     except RuntimeError:
         return False
     return True
+
+
+def _resolve_model_from_generic_alias(type_: _GenericAlias) -> _GenericAlias:
+    resolved = tuple(_resolve_model(dtype) for dtype in type_.__args__)
+
+    if type_._name:
+        import typing
+
+        return getattr(typing, type_._name)[resolved]
+
+    return type_.__origin__[resolved]
+
+
+def _resolve_model(type_: Callable) -> Type[Any]:
+    if _is_pydantic_supported(type_):
+        return type_
+
+    if isinstance(type_, _GenericAlias):
+        return _resolve_model_from_generic_alias(type_)
+
+    if callable(type_):
+        vd = ValidatedFunction(type_, None)
+        return vd.model
+
+    raise TypeError(f"cannot resolve type {type_}")
 
 
 class ValidatedFunction:
@@ -80,12 +108,14 @@ class ValidatedFunction:
         for name, p in parameters.items():
             if (p.annotation is p.empty) or (_is_pydantic_supported(p.annotation)):
                 real_parameters[name] = p
-                continue
 
-            vd = ValidatedFunction(p.annotation, config)
-            real_parameters[name] = Parameter(
-                name=name, default=p.default, annotation=vd.model, kind=p.kind
-            )
+            else:
+                real_parameters[name] = Parameter(
+                    name=name,
+                    default=p.default,
+                    annotation=_resolve_model(p.annotation),
+                    kind=p.kind,
+                )
 
         self.raw_function = function
         self.arg_mapping: Dict[int, str] = {}
