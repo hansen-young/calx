@@ -38,7 +38,7 @@ def validate_arguments(func: Optional["AnyCallableT"], args: dict):
     """
 
     vd = ValidatedFunction(func, None)
-    vd.model.validate(args)
+    vd.init_model_instance(**args)
 
 
 ALT_V_ARGS = "v__args"
