@@ -1,11 +1,18 @@
+import os
 import time
 import argparse
+from tempfile import TemporaryDirectory
 
 from calx.dtypes import *
 from calx.utils import read_environ
 from calx.scripts.config import load_config
 from calx.scripts.config.check import check_pipeline_configs
-from calx.scripts.containers import build, spawn_container, BaseContainer
+from calx.scripts.containers import (
+    build,
+    spawn_container,
+    BaseContainer,
+    LocalContainer,
+)
 
 
 def parse_arguments():
@@ -51,8 +58,11 @@ def run_step(step: str, args: Namespace, conf: Config) -> BaseContainer:
     step_type = step_conf["type"].lower()
     container_type = args.container if step_type != "docker" else "local"
     envlist = read_environ(step_conf.get("envfile"), args.workdir)
+    output = step_conf.get("output")
 
-    return spawn_container(container_type, step, args.file, args.workdir, envlist)
+    return spawn_container(
+        container_type, step, args.file, args.workdir, envlist, output
+    )
 
 
 def run_pipeline(args: Namespace, conf: Config):
@@ -91,6 +101,12 @@ def run_pipeline(args: Namespace, conf: Config):
             time.sleep(0.5)
 
         for pname in to_pop:
+            with open(os.path.join(os.environ["CALX_TMPDIR"], pname), "w") as fp:
+                fp.write(running[pname].output())
+
+            if isinstance(running[pname], LocalContainer) and running[pname]._output:
+                os.remove(running[pname]._output)
+
             del running[pname]
 
             for qname in queued:
@@ -118,9 +134,12 @@ def main():
     print(conf)
     # =============
 
-    check_pipeline_configs(conf)
-    build(args, conf)
-    run(args, conf)
+    with TemporaryDirectory(prefix="calx") as tmpdir:
+        os.environ["CALX_TMPDIR"] = tmpdir
+
+        check_pipeline_configs(conf)
+        build(args, conf)
+        run(args, conf)
 
 
 # Note + Reminder:

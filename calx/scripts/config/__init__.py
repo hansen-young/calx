@@ -4,6 +4,7 @@ import pkg_resources
 from omegaconf import OmegaConf
 
 from calx import __version__
+from calx.scripts.config.resolvers import *
 from calx.dtypes import *
 
 __all__ = ["base_template", "base_template_from_args"]

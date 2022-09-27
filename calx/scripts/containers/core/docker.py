@@ -10,6 +10,7 @@ class DockerContainer(BaseContainer):
     def __init__(self):
         self._client = docker.from_env()
         self._process = None
+        self._output = None
         self._container_id = None
         self.__started = False
 
@@ -58,13 +59,40 @@ class DockerContainer(BaseContainer):
     def is_finished(self) -> bool:
         return self.__started and not self.is_running()
 
+    def output(self) -> str:
+        if not self._output or not self.is_finished():
+            return ""
+
+        self._process.start()
+
+        try:
+            # [Security Warning]
+            # Probably vulnerable to command injection attack
+            # tried:
+            # - cat {/path/to/file; rm /path/to/file}
+            # - cat {/path/to/file || rm /path/to/file}
+            # but does not seem to work.
+            run = self._process.exec_run(f"cat {self._output}", workdir="/usr/src/app")
+            exit_code = run.exit_code
+            out = run.output.decode("utf8")
+        except Exception as e:
+            exit_code = -1
+            out = str(e)
+        finally:
+            self._process.stop()
+
+        if exit_code != 0:
+            raise Exception(out)
+
+        return out
+
     def wait(self, timeout: int = None):
         if isinstance(timeout, int) and timeout > 0:
             self._process.wait(timeout=timeout)
         else:
             self._process.wait(condition="not-running")
 
-    def run(self, step_name: str, envlist: dict, **kwargs):
+    def run(self, step_name: str, envlist: dict, output: str = None, **kwargs):
         if self.__started:
             raise Exception("container has been used")
 
@@ -77,6 +105,7 @@ class DockerContainer(BaseContainer):
         # Note: auto_remove set to False, so that _stats method still can get the
         # container info even after the container exited.
         log.info(f"creating docker container for step `{step_name}`")
+        self._output = output
         self.__started = True
         self._process = self._client.containers.run(
             image=os.environ["CALX_DOCKER_IMAGE_TAG"],
@@ -90,10 +119,11 @@ class DockerContainer(BaseContainer):
                 "-s",
                 step_name,
             ],
-            environment=envlist,
+            environment={**envlist, "CALX_TMPDIR": os.environ["CALX_TMPDIR"]},
             working_dir=workdir,
             detach=True,
             auto_remove=False,
+            volumes=[f"{os.environ['CALX_TMPDIR']}:{os.environ['CALX_TMPDIR']}"],
         )
         self._container_id = self._process.short_id
         self._spawn_logging_thread()

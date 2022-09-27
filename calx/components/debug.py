@@ -44,3 +44,23 @@ class Sleep:
         for i in range(self.time):
             self.print(f"{i+1}...")
             time.sleep(1)
+
+
+class FileWriter:
+    def __init__(self, path: str, content: str):
+        self.path = os.path.abspath(path)
+        self.content = content
+
+    def __call__(self):
+        with open(self.path, "w") as fp:
+            fp.write(self.content)
+
+
+class PrintArgs:
+    def __init__(self, **kwargs):
+        self.kwargs = kwargs
+
+    def __call__(self):
+        print("[PrintArgs]")
+        for k, v in self.kwargs.items():
+            print(f"{k}: {v}")

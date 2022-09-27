@@ -9,7 +9,12 @@ __containers = {
 
 
 def spawn_container(
-    container_type: str, step_name: str, config_file: str, workdir: str, envlist: dict
+    container_type: str,
+    step_name: str,
+    config_file: str,
+    workdir: str,
+    envlist: dict,
+    output: str = None,
 ) -> BaseContainer:
     container = __containers[container_type]()
     container.run(
@@ -17,6 +22,7 @@ def spawn_container(
         config_file=config_file,
         workdir=workdir,
         envlist=envlist,
+        output=output,
     )
 
     return container
